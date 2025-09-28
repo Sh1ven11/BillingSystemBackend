@@ -10,5 +10,6 @@ router.get('/:id', templateController.getTemplate);
 router.post('/post', templateController.createTemplate);
 router.put('/:id', templateController.updateTemplate);
 router.delete('/:id', templateController.deleteTemplate);
+router.post('/:id/send-mail', templateController.sendMail);
 
 export default router;

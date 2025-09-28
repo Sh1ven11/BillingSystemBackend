@@ -120,7 +120,6 @@ export const templateController = {
     }
   },
 
-  // Update template
  // Update template
 updateTemplate: async (req, res) => {
   try {
@@ -205,5 +204,27 @@ updateTemplate: async (req, res) => {
       console.error('Server error:', error);
       res.status(500).json({ error: 'Server error occurred' });
     }
+  },
+  sendMail: async (req, res) => {
+    const { id } = req.params;
+    try {
+      // fetch template
+      const { data: template, error } = await supabaseAdmin
+        .from('templates')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error || !template) return res.status(404).json({ error: 'Template not found' });
+
+      // here use nodemailer / your email service to send the template
+      console.log(`Sending mail to ${template.to_mail} with subject ${template.subject}`);
+
+      res.json({ message: 'Mail sent successfully' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to send mail' });
+    }
   }
+
 };
