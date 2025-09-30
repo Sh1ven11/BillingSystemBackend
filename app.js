@@ -11,7 +11,7 @@ const app = express();
 
 // 1. CORS configuration
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'https://billingsystemfrontend.onrender.com/',
   credentials: true
 }));
 
