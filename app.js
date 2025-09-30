@@ -11,7 +11,7 @@ const app = express();
 
 // 1. CORS configuration
 app.use(cors({
-  origin: 'https://billingsystemfrontend.onrender.com/',
+  origin: 'https://billingsystemfrontend.onrender.com',
   credentials: true
 }));
 
@@ -25,7 +25,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false } // important for HTTP
+  cookie: { secure: process.env.NODE_ENV === 'production' }
 }));
 
 
@@ -44,7 +44,7 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', port: 3000 });
 });
 
-const PORT = 3000;
+const PORT = process.env.port||3000;
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
   console.log(`✅ CORS enabled for: http://localhost:5173`);
