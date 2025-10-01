@@ -28,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // In your server.js - UPDATE your session middleware
  app.use(session({
-  name: 'billing.sid',
+  name: 'connect.sid',
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
