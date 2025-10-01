@@ -26,18 +26,20 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 3. Session middleware
+// In your server.js - UPDATE your session middleware
 app.use(session({
+  name: 'billing.sid', // Give it a custom name
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
+  store: new session.MemoryStore(), // Explicitly set store
   cookie: { 
     httpOnly: true,
-    secure: true,            // required for HTTPS (Render uses HTTPS)
-    sameSite: 'none'         // allow cross-origin cookies
+    secure: true,
+    sameSite: 'none',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours - ADD THIS
   }
 }));
-
 
 // 4. Routes
 app.use('/api/auth', authRoutes);

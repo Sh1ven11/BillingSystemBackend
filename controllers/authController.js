@@ -19,19 +19,19 @@ export const authController = {
       const match = await bcrypt.compare(password, mockUser.hashedPassword);
       if (!match) return res.status(401).json({ error: 'Invalid password' });
 
-      // Create session - with proper error handling
+      // Create session
       req.session.isAuthenticated = true;
       req.session.userEmail = email;
       req.session.userId = 'user_' + Date.now();
 
-      // Explicitly save the session
+      // MANUALLY SAVE THE SESSION
       req.session.save((err) => {
         if (err) {
           console.error('Session save error:', err);
           return res.status(500).json({ error: 'Session error' });
         }
         
-        console.log('Session created:', req.session);
+        console.log('Session saved:', req.session);
         res.status(200).json({ 
           message: 'Sign-in successful', 
           user: { email },
@@ -44,6 +44,8 @@ export const authController = {
       res.status(500).json({ error: 'Internal server error' });
     }
   },
+
+  // ... rest of your code
 
   signOut: (req, res) => {
     const sessionCookieName = 'connect.sid'; // Correct cookie name
