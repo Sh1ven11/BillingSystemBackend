@@ -27,19 +27,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // In your server.js - UPDATE your session middleware
-app.use(session({
-  name: 'billing.sid', // Give it a custom name
+ app.use(session({
+  name: 'billing.sid',
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
-  store: new session.MemoryStore(), // Explicitly set store
-  cookie: { 
+  // ❌ Remove MemoryStore in prod
+  // store: new session.MemoryStore(),
+  cookie: {
     httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours - ADD THIS
+    secure: process.env.NODE_ENV === "production", // only true on HTTPS
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: 24 * 60 * 60 * 1000 // 24h
   }
 }));
+
 
 // 4. Routes
 app.use('/api/auth', authRoutes);
