@@ -49,7 +49,9 @@ app.get('/api/debug-session', (req, res) => {
     session: req.session,
     isAuthenticated: req.session.isAuthenticated,
     userId: req.session.userId,
-    cookies: req.headers.cookie
+    cookies: req.headers.cookie,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours - ADD THIS LINE
+
   });
 });
 // 5. Test route
