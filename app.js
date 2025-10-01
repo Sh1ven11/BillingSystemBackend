@@ -10,8 +10,24 @@ dotenv.config();
 const app = express();
 
 // 1. CORS configuration
+import cors from 'cors';
+
+const allowedOrigins = [
+  'http://localhost:5173',                   // dev
+  'https://billingsystemfrontend-1.onrender.com', // Render deployed frontend
+  'https://bills.mytechbuddy.in'            // your custom domain
+];
+
 app.use(cors({
-  origin: 'https://billingsystemfrontend-1.onrender.com',
+  origin: function(origin, callback){
+    // allow requests with no origin (like mobile apps or curl requests)
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){
+      const msg = 'The CORS policy for this site does not allow access from the specified origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
   credentials: true
 }));
 
