@@ -11,7 +11,7 @@ const app = express();
 
 // 1. CORS configuration
 app.use(cors({
-  origin: 'https://billingsystemfrontend.onrender.com',
+  origin: 'https://billingsystemfrontend-1.onrender.com',
   credentials: true
 }));
 
