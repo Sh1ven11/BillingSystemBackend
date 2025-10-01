@@ -38,6 +38,6 @@ export const authController = {
       return res.json({ authenticated: true, user: { email: req.session.userEmail } });
     }
     console.log("ello mate fromauthi");
-    return res.status(401).json({ authenticated: false, message: 'Not authenticated' });
+    return res.status(401).json({ authenticated: false, message: 'Not authenticated baby' });
   }
 };
