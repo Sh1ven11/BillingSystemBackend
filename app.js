@@ -48,14 +48,14 @@ app.use('/api/templates', tempRoutes);
 app.get('/api/test', (req, res) => {
   res.json({ message: 'Server is working on port 3000!' });
 });
+const PORT = process.env.PORT;
 
 // 6. Health check
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', port: 3000 });
+  res.json({ status: 'OK', port: {PORT} });
 });
 
-const PORT = process.env.PORT||3000;
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
-  console.log(`✅ CORS enabled for: http://localhost:5173`);
+ //console.log(`✅ CORS enabled for: http://localhost:5173`);
 });
