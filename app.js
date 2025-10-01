@@ -43,7 +43,15 @@ app.use(session({
 app.use('/api/auth', authRoutes);
 app.use('/api/bills', billRoutes);
 app.use('/api/templates', tempRoutes);
-
+// Add this to your backend routes
+app.get('/api/debug-session', (req, res) => {
+  res.json({
+    session: req.session,
+    isAuthenticated: req.session.isAuthenticated,
+    userId: req.session.userId,
+    cookies: req.headers.cookie
+  });
+});
 // 5. Test route
 app.get('/api/test', (req, res) => {
   res.json({ message: 'Server is working on port 3000!' });
