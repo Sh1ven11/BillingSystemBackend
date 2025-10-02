@@ -10,13 +10,22 @@ import tempRoutes from './routes/tempRoutes.js';
 dotenv.config();
 const app = express();
 
+// Determine if we are in a production environment
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Define the correct list of allowed origins
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://bills.mytechbuddy.in',
+  // IMPORTANT: Add your Vercel default domain here if it's different.
+  // Example: 'https://[your-app-name].vercel.app'
+  // Or, if using an environment variable: process.env.VERCEL_FRONTEND_URL 
+];
+
+
 // 1. CORS configuration
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://billingsystemfrontend-1.onrender.com',
-    'https://bills.mytechbuddy.in'
-  ],
+  origin: allowedOrigins,
   credentials: true
 }));
 
@@ -27,13 +36,15 @@ app.use(express.urlencoded({ extended: true }));
 // 3. Session middleware
 app.use(session({
   name: 'billing.sid',
-  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  secret: process.env.SESSION_SECRET || 'your-secret-key', // Use a strong secret in production
   resave: false,
   saveUninitialized: false,
   cookie: { 
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',  // ❌ only force HTTPS in prod
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    // FIX 1: Set secure to true only in production (HTTPS)
+    secure: isProduction,
+    // FIX 2: Set sameSite to 'none' in production for cross-site cookie transmission
+    sameSite: isProduction ? 'none' : 'lax',
     maxAge: 24 * 60 * 60 * 1000
   }
 }));
