@@ -4,14 +4,14 @@ dotenv.config();
 
 const mockUser = {
   email: "arvind@kalitransport.in",
-  hashedPassword: process.env.USER_PASSWORD
+  hashedPassword: process.env.USER_PASSWORD // already bcrypt-hashed
 };
 
 export const authController = {
   signIn: async (req, res) => {
     try {
       const { email, password } = req.body;
-      
+
       if (!mockUser || email !== mockUser.email) {
         return res.status(401).json({ error: 'Invalid email or password' });
       }
@@ -24,13 +24,12 @@ export const authController = {
       req.session.userEmail = email;
       req.session.userId = 'user_' + Date.now();
 
-      // MANUALLY SAVE THE SESSION
       req.session.save((err) => {
         if (err) {
           console.error('Session save error:', err);
           return res.status(500).json({ error: 'Session error' });
         }
-        
+
         console.log('Session saved:', req.session);
         res.status(200).json({ 
           message: 'Sign-in successful', 
@@ -38,26 +37,19 @@ export const authController = {
           sessionId: req.sessionID 
         });
       });
-      
     } catch (error) {
       console.error('Sign-in error:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   },
 
-  // ... rest of your code
-
   signOut: (req, res) => {
-    const sessionCookieName = 'connect.sid'; // Correct cookie name
-    
     req.session.destroy((err) => {
       if (err) {
         console.error('Sign-out error:', err);
         return res.status(500).json({ error: 'Could not sign out' });
       }
-      
-      // Clear the correct cookie name
-      res.clearCookie(sessionCookieName);
+      res.clearCookie('billing.sid'); // must match cookie name
       res.json({ message: 'Signed out successfully' });
     });
   },
@@ -65,15 +57,14 @@ export const authController = {
   checkAuth: (req, res) => {
     console.log('=== CHECK AUTH ===');
     console.log('Session:', req.session);
-    console.log('isAuthenticated:', req.session.isAuthenticated);
-    
+
     if (req.session.isAuthenticated) {
       return res.json({ 
         authenticated: true, 
         user: { email: req.session.userEmail } 
       });
     }
-    
+
     return res.status(401).json({ 
       authenticated: false, 
       message: 'Not authenticated' 
