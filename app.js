@@ -10,16 +10,16 @@ import tempRoutes from './routes/tempRoutes.js';
 dotenv.config();
 const app = express();
 
-// Determine if we are in a production environment
-const isProduction = process.env.NODE_ENV === 'production';
+// Use an environment variable, but also assume production if PORT is not 3000
+const PORT = process.env.PORT || 3000;
+const isProduction = process.env.NODE_ENV === 'production' || PORT !== 3000;
+
 
 // Define the correct list of allowed origins
 const allowedOrigins = [
   'http://localhost:5173',
   'https://bills.mytechbuddy.in',
-  // IMPORTANT: Add your Vercel default domain here if it's different.
-  // Example: 'https://[your-app-name].vercel.app'
-  // Or, if using an environment variable: process.env.VERCEL_FRONTEND_URL 
+  // IMPORTANT: Ensure your Vercel app's domain is here
 ];
 
 
@@ -34,14 +34,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 3. Session middleware
+app.set('trust proxy', 1); // Trust the first proxy (required for Heroku/Render/Vercel to set secure cookies)
+
 app.use(session({
   name: 'billing.sid',
-  secret: process.env.SESSION_SECRET || 'your-secret-key', // Use a strong secret in production
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
   cookie: { 
     httpOnly: true,
-    // FIX 1: Set secure to true only in production (HTTPS)
+    // FIX 1: Set secure based on our robust check
     secure: isProduction,
     // FIX 2: Set sameSite to 'none' in production for cross-site cookie transmission
     sameSite: isProduction ? 'none' : 'lax',
@@ -69,8 +71,6 @@ app.get('/api/debug-session', (req, res) => {
 app.get('/api/test', (req, res) => {
   res.json({ message: 'Server is working on port 3000!' });
 });
-
-const PORT = process.env.PORT || 3000;
 
 // Health check
 app.get('/health', (req, res) => {
