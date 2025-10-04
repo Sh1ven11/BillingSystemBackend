@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 
 export const transporter = nodemailer.createTransport({
   host: "smtp.sendgrid.net",
-  port: 587, // SendGrid standard port for STARTTLS (usually open)
+  port: 2525, // SendGrid standard port for STARTTLS (usually open)
   secure: false, // Use false for port 587
   auth: {
     // IMPORTANT: The username is literally 'apikey'
