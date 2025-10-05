@@ -16,40 +16,46 @@ const isProduction = process.env.NODE_ENV === 'production' || PORT !== 3000;
 
 
 // Define the correct list of allowed origins
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://bills.mytechbuddy.in',
-  'https://www.bills.mytechbuddy.in' // add this if you use the www version
+// const allowedOrigins = [
+//   'http://localhost:5173',
+//   'https://bills.mytechbuddy.in',
+//   'https://www.bills.mytechbuddy.in' // add this if you use the www version
 
-  // IMPORTANT: Ensure your Vercel app's domain is here
-];
+//   // IMPORTANT: Ensure your Vercel app's domain is here
+// ];
 
 
-// 1. CORS configuration
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true
-}));
+// // 1. CORS configuration
+// app.use(cors({
+//   origin: allowedOrigins,
+//   credentials: true
+// }));
 
 // 2. Body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 3. Session middleware
-app.set('trust proxy', 1); // required if deployed behind proxy (Render, Vercel, etc.)
+app.set('trust proxy', 1);
+
+app.use(cors({
+  origin: 'https://bills.mytechbuddy.in',
+  credentials: true
+}));
 
 app.use(session({
   name: 'billing.sid',
-  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { 
+  cookie: {
     httpOnly: true,
-    secure: true,          // ALWAYS true if your site uses https://
-    sameSite: 'none',      // REQUIRED for iPhone cross-site cookies
-    maxAge: 24 * 60 * 60 * 1000 // 1 day
+    secure: true,
+    sameSite: 'none',
+    domain: '.mytechbuddy.in', // 👈 allows cookie sharing between subdomains
+    maxAge: 24 * 60 * 60 * 1000
   }
 }));
+
 
 
 
