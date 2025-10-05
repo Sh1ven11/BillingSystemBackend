@@ -19,6 +19,8 @@ const isProduction = process.env.NODE_ENV === 'production' || PORT !== 3000;
 const allowedOrigins = [
   'http://localhost:5173',
   'https://bills.mytechbuddy.in',
+  'https://www.bills.mytechbuddy.in' // add this if you use the www version
+
   // IMPORTANT: Ensure your Vercel app's domain is here
 ];
 
@@ -34,7 +36,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 3. Session middleware
-app.set('trust proxy', 1); // Trust the first proxy (required for Heroku/Render/Vercel to set secure cookies)
+app.set('trust proxy', 1); // required if deployed behind proxy (Render, Vercel, etc.)
 
 app.use(session({
   name: 'billing.sid',
@@ -43,13 +45,12 @@ app.use(session({
   saveUninitialized: false,
   cookie: { 
     httpOnly: true,
-    // FIX 1: Set secure based on our robust check
-    secure: isProduction,
-    // FIX 2: Set sameSite to 'none' in production for cross-site cookie transmission
-    sameSite: isProduction ? 'none' : 'lax',
-    maxAge: 24 * 60 * 60 * 1000
+    secure: true,          // ALWAYS true if your site uses https://
+    sameSite: 'none',      // REQUIRED for iPhone cross-site cookies
+    maxAge: 24 * 60 * 60 * 1000 // 1 day
   }
 }));
+
 
 
 // 4. Routes
