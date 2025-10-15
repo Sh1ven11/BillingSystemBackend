@@ -16,7 +16,8 @@ export const billsController = {
           inv_no,
           bill_amount,
           amount_unpaid,
-          companies:company_id ( company_name, company_id, comp )
+          comp,
+          companies:company_id ( company_name, company_id )
         `)
         .not('amount_unpaid', 'eq', 0)
         .order('company_name', { foreignTable: 'companies', ascending: true });
