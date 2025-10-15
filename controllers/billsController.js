@@ -24,7 +24,7 @@ export const billsController = {
 
       // Filter by company comp
       if (comp) {
-        query = query.eq('companies.comp', comp);
+        query = query.eq('comp', comp);
       }
 
       const { data, error } = await query;
