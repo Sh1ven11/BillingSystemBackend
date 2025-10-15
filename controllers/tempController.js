@@ -18,7 +18,7 @@ export const templateController = {
       if (comp) {
         query = query.eq('comp', comp);
       }
-
+      console.log(query.toString());
       const { data: templates, error } = await query;
 
       if (error) {
