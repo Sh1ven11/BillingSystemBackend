@@ -5,13 +5,21 @@ import { transporter } from '../services/mailService.js';
 
 export const templateController = {
   // Get all templates
-  
+    
   getAllTemplates: async (req, res) => {
     try {
-      const { data: templates, error } = await supabaseAdmin
+      const { comp } = req.query; // company code: 1 = KTPL, 2 = MLPL
+      let query = supabaseAdmin
         .from('templates')
         .select('*')
         .order('created_at', { ascending: false });
+
+      // Apply filter if comp is provided
+      if (comp) {
+        query = query.eq('comp', comp);
+      }
+
+      const { data: templates, error } = await query;
 
       if (error) {
         console.error('Supabase query error:', error);
@@ -24,6 +32,7 @@ export const templateController = {
       res.status(500).json({ error: 'Server error occurred' });
     }
   },
+
 
   // Get single template with companies
   getTemplate: async (req, res) => {
