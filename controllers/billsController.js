@@ -20,8 +20,9 @@ export const billsController = {
           companies:company_id ( company_name, company_id )
         `)
         .not('amount_unpaid', 'eq', 0)
-        .order('company_name', { foreignTable: 'companies', ascending: true });
-
+        .order('company_name', { foreignTable: 'companies', ascending: true })
+        .limit(100000);
+        
       // Filter by company comp
       if (comp) {
         query = query.eq('comp', comp);
